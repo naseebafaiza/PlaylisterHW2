@@ -40,7 +40,7 @@ export default class ListCard extends React.Component {
         if (event.code === "Enter") {
             this.handleBlur();
         }
-    }
+}
     handleBlur = () => {
         let key = this.props.keyNamePair.key;
         let textValue = this.state.text;
@@ -87,7 +87,7 @@ export default class ListCard extends React.Component {
                         id={"delete-list-" + keyNamePair.key}
                         className="list-card-button"
                         onClick={this.handleDeleteList}
-                        value={"\u2715"} />
+                        value={"🗑"} />
                 </div>
             );
         }

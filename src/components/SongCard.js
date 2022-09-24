@@ -69,6 +69,7 @@ export default class SongCard extends React.Component {
         return (
             <div
                 id={'song-' + num}
+                style={{display: "flex", justifyContent: "space-between"}}
                 className={itemClass}
                 onDragStart={this.handleDragStart}
                 onDragOver={this.handleDragOver}
@@ -76,8 +77,12 @@ export default class SongCard extends React.Component {
                 onDragLeave={this.handleDragLeave}
                 onDrop={this.handleDrop}
                 draggable="true"
-            >
-                {song.title} by {song.artist}
+                ><span style= {{fontWeight: 'normal', fontStyle: 'normal'}}>
+                    {num + '. '} <a href={"https://youtube.com/watch?v=" + song.youTubeId} target="_blank" rel="noreferrer">{song.title} by {song.artist}</a>
+                </span>
+                <input 
+                type = "button" id = {"delete-song-" + num} value = {"x"} />
+
             </div>
         )
     }
