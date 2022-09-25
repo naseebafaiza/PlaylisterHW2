@@ -237,15 +237,15 @@ class App extends React.Component {
     }
 // this function begins the process of adding a song
     addSong = () => {
+        let theCurrentList = this.state.currentList;
         let newSong = {
             title: "Untitled",
             artist: "Unknown",
             youTubeId: "dQw4w9WgXcQ",
             // num: currentList.songs.length + 1,
         }
-        this.setState(prevState => ({
-            currentList: prevState.currentList.songs.push(newSong) 
-        }))
+        theCurrentList.songs.push(newSong);
+        this.setStateWithUpdatedList(theCurrentList);
     }
     // THIS FUNCTION BEGINS THE PROCESS OF PERFORMING AN UNDO
     undo = () => {
