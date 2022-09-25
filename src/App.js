@@ -18,6 +18,7 @@ import PlaylistCards from './components/PlaylistCards.js';
 import SidebarHeading from './components/SidebarHeading.js';
 import SidebarList from './components/SidebarList.js';
 import Statusbar from './components/Statusbar.js';
+import AddSongTransaction from './transactions/AddSongTransaction';
 
 class App extends React.Component {
     constructor(props) {
@@ -247,6 +248,13 @@ class App extends React.Component {
         theCurrentList.songs.push(newSong);
         this.setStateWithUpdatedList(theCurrentList);
     }
+
+    // this is the transaction for adding songs
+
+    addAddSongTransaction = () =>{
+        let transaction = new AddSongTransaction(this);
+        this.tps.addTransaction(transaction);
+    }
     // THIS FUNCTION BEGINS THE PROCESS OF PERFORMING AN UNDO
     undo = () => {
         if (this.tps.hasTransactionToUndo()) {
@@ -274,6 +282,15 @@ class App extends React.Component {
             // PROMPT THE USER
             this.showDeleteListModal();
         });
+    }
+    // this function removes a song
+    // need this for delete and also transactions
+
+    removeSong = () => {
+        var theCurrentList = this.state.currentList;
+        theCurrentList = theCurrentList.songs.pop;
+        this.setStateWithUpdatedList(theCurrentList);
+
     }
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
     // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
