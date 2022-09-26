@@ -9,11 +9,13 @@ import jsTPS from './common/jsTPS.js';
 import MoveSong_Transaction from './transactions/MoveSong_Transaction.js';
 import AddSongTransaction from './transactions/AddSongTransaction';
 import EditSongTransaction from './transactions/EditSongTransaction';
+import DeleteSongTransaction from './transactions/DeleteSongTransaction';
 
 
 // THESE REACT COMPONENTS ARE MODALS
 import DeleteListModal from './components/DeleteListModal.js';
 import EditSongModal from './components/EditSongModal';
+import DeleteSongModal from './components/DeleteSongModal';
 
 // THESE REACT COMPONENTS ARE IN OUR UI
 import Banner from './components/Banner.js';
@@ -280,6 +282,26 @@ class App extends React.Component {
         this.hideEditModal();
     }
 
+    insertSongAtId(id, song){
+        let tempList = this.state.currentList;
+        tempList.songs.splice(id, 0, song);
+        this.setStateWithUpdatedList(tempList);
+    }
+
+    deleteSong = (id) => {
+        console.log("delete song function reached");
+        this.state.currentList.songs.splice(id, 1);
+        this.hideDeleteModal();
+        this.db.mutationUpdateList(this.state.currentList);
+        this.setStateWithUpdatedList(this.state.currentList);
+    }
+
+    addDeleteSongTransaction = () => {
+        let transaction = new DeleteSongTransaction(this, this.state.songCardId);
+        this.tps.addTransaction(transaction);
+
+    }
+
     addEditSongTransaction = () =>{
         let transaction = new EditSongTransaction(this, this.state.songCardId);
         this.tps.addTransaction(transaction);
@@ -331,6 +353,18 @@ class App extends React.Component {
         });
     }
 
+    markSongForDeletion = (id) =>{
+        console.log("mark song for deletion function reached");
+        this.setState(prevState => ({
+            currentList: prevState.currentList,
+            listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
+            sessionData: prevState.sessionData,
+            songCardId: id-1
+        }), () => {
+            this.showDeleteModal();
+        });
+    }
+
     showEditModal(id){
         let editModal = document.getElementById("edit-song-modal");
         editModal.classList.add("is-visible");
@@ -365,6 +399,21 @@ class App extends React.Component {
         let modal = document.getElementById("delete-list-modal");
         modal.classList.remove("is-visible");
     }
+    
+    //delete show and hide
+
+    showDeleteModal(){
+        console.log("show delete modal reached");
+        let deleteModal = document.getElementById("delete-song-modal");
+        deleteModal.classList.add("is-visible");
+
+    }
+    hideDeleteModal(){
+        console.log("hide delete modal reached");
+        let deleteModal = document.getElementById("delete-song-modal");
+        deleteModal.classList.remove("is-visible");
+
+    }
 
     render() {
         let canAddSong = this.state.currentList !== null;
@@ -397,7 +446,8 @@ class App extends React.Component {
                 <PlaylistCards
                     currentList={this.state.currentList}
                     moveSongCallback={this.addMoveSongTransaction} 
-                    editSongCallback = {this.getSong}/>
+                    editSongCallback = {this.getSong}
+                    deleteSongCallback = {this.markSongForDeletion}/>
                 <Statusbar 
                     currentList={this.state.currentList} />
                 <DeleteListModal
@@ -408,6 +458,12 @@ class App extends React.Component {
                 <EditSongModal
                 editSongCallback = {this.addEditSongTransaction}
                 hideEditSongModalCallback={this.hideEditModal}/>
+
+                <DeleteSongModal
+                deleteSongCallback = {this.addDeleteSongTransaction}
+                hideDeleteModalCallback = {this.hideDeleteModal}
+                currentList = {this.state.currentList}
+                songCardId = {this.state.songCardId}/>
             </div>
         );
     }
