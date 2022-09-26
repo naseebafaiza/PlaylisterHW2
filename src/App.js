@@ -252,6 +252,7 @@ class App extends React.Component {
     }
 // this function begins the process of adding a song
     addSong = () => {
+        console.log("add song function reached");
         let theCurrentList = this.state.currentList;
         let newSong = {
             title: "Untitled",
@@ -265,16 +266,16 @@ class App extends React.Component {
 
     // this function starts the editing of a song
 
-    editSong(id, title, artist, youTubeId){
+    editSong = (index, title, artist, youTubeId) =>{
         this.setState(prevState => ({
             listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
-            currentList: prevState.currentList.songs.splice(id, 1, {
+            currentList: prevState.currentList.songs.splice(index, 1, {
                 "title":title,
                 "artist":artist,
                 "youTubeId":youTubeId
             }),
             sessionData: this.state.sessionData, 
-            songCardId : id
+            songCardId : index
         }), () => {
             this.db.mutationUpdateList(this.state.currentList);
         });
@@ -282,13 +283,34 @@ class App extends React.Component {
         this.hideEditModal();
     }
 
-    insertSongAtId(id, song){
+    insertSongAtId = (index, song) => {
+        console.log("delete song at this index function reached");
         let tempList = this.state.currentList;
-        tempList.songs.splice(id, 0, song);
+        tempList.songs.splice(index, 0, song);
         this.setStateWithUpdatedList(tempList);
     }
 
-    deleteSong = (id) => {
+    removeSongAtId= (id) =>{
+        console.log("remove song at a certain index function reached");
+        let theCurrentList = this.state.currentList;
+        theCurrentList.songs.splice(id, 1);
+        this.setStateWithUpdatedList(theCurrentList);
+    }
+    /*
+    from hw 1
+        if(this.hasCurrentList()){
+            let currntList = this.currentList.songs;
+            currntList.splice(id,1);
+            this.currentList.songs = currntList;
+            this.view.refreshPlaylist(this.currentList);
+        }
+        for(let i = 0; i<this.currentList.songs.length; i++){
+            console.log(this.currentList.getSongAt(i).title);
+        }       
+         this.saveLists();
+    */
+
+    deleteSongAtId = (id) => {
         console.log("delete song function reached");
         this.state.currentList.songs.splice(id, 1);
         this.hideDeleteModal();
@@ -297,12 +319,14 @@ class App extends React.Component {
     }
 
     addDeleteSongTransaction = () => {
+        console.log("delete song transaction reached");
         let transaction = new DeleteSongTransaction(this, this.state.songCardId);
         this.tps.addTransaction(transaction);
 
     }
 
     addEditSongTransaction = () =>{
+        console.log("edit song transaction reached");
         let transaction = new EditSongTransaction(this, this.state.songCardId);
         this.tps.addTransaction(transaction);
     }
@@ -310,6 +334,7 @@ class App extends React.Component {
     // this is the transaction for adding songs
 
     addAddSongTransaction = () =>{
+        console.log("add song transaction reached");
         let transaction = new AddSongTransaction(this);
         this.tps.addTransaction(transaction);
     }

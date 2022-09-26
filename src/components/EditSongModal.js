@@ -40,26 +40,3 @@ export default class EditSongModal extends Component {
         );
     }
 }
-/*
-
-<!-- MODAL (i.e. dialog) FOR VERIFYING THE EDITING OF A SONG -->
-        <div class="modal" id="edit-song-modal" data-animation="slideInOutLeft">
-            <div class="modal-root" id='verify-edit-song-card'>
-                <div class="modal-north">
-                    Edit song?
-                </div>                
-                <div class="modal-center">
-                <label for="newSongTitle" style="font-size:xx-large;"> Title </label>
-                <input id="newSongTitle" type="text" name ="newSongTitle"/>
-                <label for="newSongArtist" style="font-size: xx-large;"> Artist </label>
-                <input id="newSongArtist" type="text" name ="newSongArtist"/>
-                <label for="newYouTubeId" style="font-size: large;"> Youtube ID </label>
-                <input id="newYouTubeId" type="text" name ="newYouTubeId"/>
-                </div>
-                <div class="modal-south">
-                    <input type="button" id="edit-song-confirm-button" class="modal-button" value='Confirm' />
-                    <input type="button" id="edit-song-cancel-button" class="modal-button" value='Cancel' />
-                </div>
-            </div>
-        </div>
-*/

@@ -16,7 +16,7 @@ import jsTPS_Transaction from "../common/jsTPS.js"
     }
 
     doTransaction() {
-        this.app.deleteSong(this.id);
+        this.app.deleteSongAtId(this.id);
     }
     
     undoTransaction() {
