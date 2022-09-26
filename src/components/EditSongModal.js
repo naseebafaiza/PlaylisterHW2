@@ -3,10 +3,7 @@ import React, { Component } from 'react';
 export default class EditSongModal extends Component {
     render() {
         const { editSongCallback, hideEditSongModalCallback } = this.props;
-        let name = "";
-        if (listKeyPair) {
-            name = listKeyPair.name;
-        }
+        
         return (
             <div 
                 class="modal" 
@@ -19,22 +16,22 @@ export default class EditSongModal extends Component {
                         <div class="modal-center">
                             <div class="modal-center-content">
                             
-                            <label for="title-input" style="font-size:xx-large;"> Title </label>
+                            <label for="title-input"> Title </label>
                             <input id="title-input" type="text" onClick="this.select()"></input>
-                            <label for="artist-input" style="font-size: xx-large;"> Artist </label>
+                            <label for="artist-input"> Artist </label>
                             <input id="artist-input" type="text" onClick="this.select()"></input>
-                            <label for="yt-input" style="font-size: large;"> Youtube ID </label>
+                            <label for="yt-input"> Youtube ID </label>
                             <input id="yt-input" type="text" onClick="this.select()"></input>
                             </div>
                         </div>
                         <div class="modal-south">
                             <input type="button" 
-                                id="delete-list-confirm-button" 
+                                id="edit-song-confirm-button" 
                                 class="modal-button" 
                                 onClick={editSongCallback}
                                 value='Confirm' />
                             <input type="button" 
-                                id="delete-list-cancel-button" 
+                                id="edit-song-cancel-button" 
                                 class="modal-button" 
                                 onClick={hideEditSongModalCallback}
                                 value='Cancel' />

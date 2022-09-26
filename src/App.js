@@ -8,6 +8,8 @@ import jsTPS from './common/jsTPS.js';
 // OUR TRANSACTIONS
 import MoveSong_Transaction from './transactions/MoveSong_Transaction.js';
 import AddSongTransaction from './transactions/AddSongTransaction';
+import EditSongTransaction from './transactions/EditSongTransaction';
+
 
 // THESE REACT COMPONENTS ARE MODALS
 import DeleteListModal from './components/DeleteListModal.js';
@@ -39,7 +41,8 @@ class App extends React.Component {
         this.state = {
             listKeyPairMarkedForDeletion : null,
             currentList : null,
-            sessionData : loadedSessionData
+            sessionData : loadedSessionData,
+            songCardId : null
         }
     }
     sortKeyNamePairsByName = (keyNamePairs) => {
@@ -79,8 +82,10 @@ class App extends React.Component {
             sessionData: {
                 nextKey: prevState.sessionData.nextKey + 1,
                 counter: prevState.sessionData.counter + 1,
-                keyNamePairs: updatedPairs
-            }
+                keyNamePairs: updatedPairs,
+            },
+            songCardId : null
+
         }), () => {
             // PUTTING THIS NEW LIST IN PERMANENT STORAGE
             // IS AN AFTER EFFECT
@@ -117,7 +122,8 @@ class App extends React.Component {
                 nextKey: prevState.sessionData.nextKey,
                 counter: prevState.sessionData.counter - 1,
                 keyNamePairs: newKeyNamePairs
-            }
+            },
+            songCardId : null
         }), () => {
             // DELETING THE LIST FROM PERMANENT STORAGE
             // IS AN AFTER EFFECT
@@ -160,7 +166,8 @@ class App extends React.Component {
                 nextKey: prevState.sessionData.nextKey,
                 counter: prevState.sessionData.counter,
                 keyNamePairs: newKeyNamePairs
-            }
+            },
+            songCardId : null
         }), () => {
             // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
             // THE TRANSACTION STACK IS CLEARED
@@ -176,7 +183,8 @@ class App extends React.Component {
         this.setState(prevState => ({
             listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
             currentList: newCurrentList,
-            sessionData: this.state.sessionData
+            sessionData: this.state.sessionData,
+            songCardId : null
         }), () => {
             // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
             // THE TRANSACTION STACK IS CLEARED
@@ -188,7 +196,8 @@ class App extends React.Component {
         this.setState(prevState => ({
             listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
             currentList: null,
-            sessionData: this.state.sessionData
+            sessionData: this.state.sessionData,
+            songCardId : null
         }), () => {
             // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
             // THE TRANSACTION STACK IS CLEARED
@@ -199,7 +208,8 @@ class App extends React.Component {
         this.setState(prevState => ({
             listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
             currentList : list,
-            sessionData : this.state.sessionData
+            sessionData : this.state.sessionData,
+            songCardId : null
         }), () => {
             // UPDATING THE LIST IN PERMANENT STORAGE
             // IS AN AFTER EFFECT
@@ -251,6 +261,30 @@ class App extends React.Component {
         this.setStateWithUpdatedList(theCurrentList);
     }
 
+    // this function starts the editing of a song
+
+    editSong(id, title, artist, youTubeId){
+        this.setState(prevState => ({
+            listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
+            currentList: prevState.currentList.songs.splice(id, 1, {
+                "title":title,
+                "artist":artist,
+                "youTubeId":youTubeId
+            }),
+            sessionData: this.state.sessionData, 
+            songCardId : id
+        }), () => {
+            this.db.mutationUpdateList(this.state.currentList);
+        });
+        this.setStateWithUpdatedList(this.state.currentList);
+        this.hideEditModal();
+    }
+
+    addEditSongTransaction = () =>{
+        let transaction = new EditSongTransaction(this, this.state.songCardId);
+        this.tps.addTransaction(transaction);
+    }
+
     // this is the transaction for adding songs
 
     addAddSongTransaction = () =>{
@@ -285,6 +319,32 @@ class App extends React.Component {
             this.showDeleteListModal();
         });
     }
+
+    getSong = (id) =>{
+        this.setState(prevState => ({
+            currentList: prevState.currentList,
+            listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
+            sessionData: prevState.sessionData,
+            songCardId : id-1
+        }), () =>{
+            this.showEditModal(id-1);
+        });
+    }
+
+    showEditModal(id){
+        let editModal = document.getElementById("edit-song-modal");
+        editModal.classList.add("is-visible");
+        document.getElementById("title-input").value = this.state.currentList.songs[id].title;
+        document.getElementById("artist-input").value = this.state.currentList.songs[id].artist;
+        document.getElementById("yt-input").value = this.state.currentList.songs[id].youTubeId;
+     
+    }
+
+    hideEditModal(){
+        let editModal = document.getElementById("edit-song-modal");
+        editModal.classList.remove("is-visible")
+    }
+
     // this function removes a song
     // need this for delete and also transactions
 
@@ -305,6 +365,7 @@ class App extends React.Component {
         let modal = document.getElementById("delete-list-modal");
         modal.classList.remove("is-visible");
     }
+
     render() {
         let canAddSong = this.state.currentList !== null;
         let canUndo = this.tps.hasTransactionToUndo();
@@ -335,7 +396,8 @@ class App extends React.Component {
                 />
                 <PlaylistCards
                     currentList={this.state.currentList}
-                    moveSongCallback={this.addMoveSongTransaction} />
+                    moveSongCallback={this.addMoveSongTransaction} 
+                    editSongCallback = {this.getSong}/>
                 <Statusbar 
                     currentList={this.state.currentList} />
                 <DeleteListModal
@@ -343,6 +405,9 @@ class App extends React.Component {
                     hideDeleteListModalCallback={this.hideDeleteListModal}
                     deleteListCallback={this.deleteMarkedList}
                 />
+                <EditSongModal
+                editSongCallback = {this.addEditSongTransaction}
+                hideEditSongModalCallback={this.hideEditModal}/>
             </div>
         );
     }
