@@ -19,7 +19,7 @@ import PlaylistCards from './components/PlaylistCards.js';
 import SidebarHeading from './components/SidebarHeading.js';
 import SidebarList from './components/SidebarList.js';
 import Statusbar from './components/Statusbar.js';
-import AddSongTransaction from './transactions/AddSongTransaction';
+
 
 class App extends React.Component {
     constructor(props) {
@@ -288,7 +288,7 @@ class App extends React.Component {
     // need this for delete and also transactions
 
     removeSong = () => {
-        var theCurrentList = this.state.currentList;
+        let theCurrentList = this.state.currentList;
         theCurrentList = theCurrentList.songs.pop;
         this.setStateWithUpdatedList(theCurrentList);
 
