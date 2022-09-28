@@ -391,6 +391,7 @@ class App extends React.Component {
     }
 
     showEditModal(id){
+        console.log("show edit modal")
         let editModal = document.getElementById("edit-song-modal");
         editModal.classList.add("is-visible");
         document.getElementById("title-input").value = this.state.currentList.songs[id].title;

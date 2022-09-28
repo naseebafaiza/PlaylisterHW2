@@ -12,7 +12,7 @@ import jsTPS_Transaction from "../common/jsTPS.js"
     constructor(initApp, index) {
         super();
         this.app = initApp;
-        this.index = this.app.state.currentList.songs[index];
+        this.index = this.app.getPlaylistSize();
     }
 
     doTransaction() {
@@ -21,7 +21,7 @@ import jsTPS_Transaction from "../common/jsTPS.js"
     }
     
     undoTransaction() {
-        console.log("undo song done");
+        console.log("undo song done::"+this.index);
         this.app.deleteSongAtId(this.index);
     }
 }
