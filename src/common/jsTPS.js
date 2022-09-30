@@ -162,8 +162,8 @@ export default class jsTPS {
         if (this.hasTransactionToRedo()) {
             this.performingDo = true;
             let transaction = this.transactions[this.mostRecentTransaction+1];
-            transaction.doTransaction();
             this.mostRecentTransaction++;
+            transaction.doTransaction();
             this.performingDo = false;
         }
     }
@@ -176,8 +176,8 @@ export default class jsTPS {
         if (this.hasTransactionToUndo()) {
             this.performingUndo = true;
             let transaction = this.transactions[this.mostRecentTransaction];
-            transaction.undoTransaction();
             this.mostRecentTransaction--;
+            transaction.undoTransaction();
             this.performingUndo = false;
         }
     }

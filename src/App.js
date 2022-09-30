@@ -267,20 +267,17 @@ class App extends React.Component {
     // this function starts the editing of a song
 
     editSong = (index, title, artist, youTubeId) =>{
-        this.setState(prevState => ({
-            listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
-            currentList: prevState.currentList.songs.splice(index, 1, {
-                "title":title,
-                "artist":artist,
-                "youTubeId":youTubeId
-            }),
-            sessionData: this.state.sessionData, 
-            songCardId : index
-        }), () => {
-            this.db.mutationUpdateList(this.state.currentList);
-        });
+        //currentList.songs.splice(index, 1, newSong)
+        this.state.currentList.songs.splice(index, 1, {
+            "title":title,
+            "artist":artist,
+            "youTubeId":youTubeId
+        })
+    
         this.setStateWithUpdatedList(this.state.currentList);
         this.hideEditModal();
+        console.log("EDIT SONG DEBUGGINGGGG:::")
+        console.log(this.state.currentList  )
     }
 
     insertSongAtId = (index, song) => {
@@ -441,11 +438,33 @@ class App extends React.Component {
 
     }
 
+    keydownHandler = (e) => {
+        if(e.ctrlKey && e.keyCode === 90){
+            if(this.tps.hasTransactionToUndo()){
+                this.undo();
+            }
+        }
+        if(e.ctrlKey && e.keyCode === 89){
+            if(this.tps.hasTransactionToRedo()){
+                this.redo();
+            }
+        }
+    }
+    componentDidMount(){
+        document.addEventListener('keydown', this.keydownHandler);
+    }
+
+    componentWillUnmount(){
+        document.removeEventListener('keydown', this.keydownHandler);
+    }
+
     render() {
         let canAddSong = this.state.currentList !== null;
         let canUndo = this.tps.hasTransactionToUndo();
         let canRedo = this.tps.hasTransactionToRedo();
         let canClose = this.state.currentList !== null;
+        console.log("CURRENT STATE DEBUGGING:")
+        console.log(this.state.currentList)
         return (
             <div id="root">
                 <Banner />

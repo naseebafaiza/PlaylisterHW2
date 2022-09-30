@@ -16,11 +16,11 @@ export default class EditSongModal extends Component {
                         <div class="modal-center">
                             <div class="modal-center-content">
                             <div id="title-input-"> Title </div>
-                            <input id="title-input" type="text" onClick="this.select()"></input>
+                            <input id="title-input" type="text" onClick={this.select}></input>
                             <div id="artist-input-"> Artist </div>
-                            <input id="artist-input" type="text" onClick="this.select()"></input>
+                            <input id="artist-input" type="text" onClick={this.select}></input>
                             <div id="yt-input-"> YouTube Id </div>
-                            <input id="yt-input" type="text" onClick="this.select()"></input>
+                            <input id="yt-input" type="text" onClick={this.select}></input>
                             </div>
                         </div>
                         <div class="modal-south">
