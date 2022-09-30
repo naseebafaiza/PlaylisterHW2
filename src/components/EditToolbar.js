@@ -4,34 +4,26 @@ export default class EditToolbar extends React.Component {
     render() {
         const { canAddSong, canUndo, canRedo, canClose, 
                 undoCallback, redoCallback, closeCallback, addSongCallback} = this.props;
-        let addSongClass = "toolbar-button";
-        let undoClass = "toolbar-button";
-        let redoClass = "toolbar-button";
-        let closeClass = "toolbar-button";
+        let addSongClass = "playlister-button";
+        let undoClass = "playlister-button";
+        let redoClass = "playlister-button";
+        let closeClass = "playlister-button";
 
-        if (canAddSong) {
-            addSongClass = "toolbar-button";
-        } else{
-            addSongClass += " disabled";
-        }
+        if (!canAddSong) {
+            addSongClass += "-disabled";
+        } 
 
-        if (canUndo) {
-            undoClass = "toolbar-button";
-        } else{ 
-            undoClass += " disabled";
-        }
+        if (!canUndo) {
+            undoClass += "-disabled";
+        } 
 
-        if (canRedo){
-            redoClass = "toolbar-button";
-        } else{
-            redoClass += " disabled";
-        }
+        if (!canRedo){
+            redoClass += "-disabled";
+        } 
 
-        if (canClose){
-            closeClass = "toolbar-button";
-        } else{
-            closeClass += " disabled";
-        }
+        if (!canClose){
+            closeClass += "-disabled";
+        } 
         
         return (
             <div id="edit-toolbar">

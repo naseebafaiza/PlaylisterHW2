@@ -116,6 +116,8 @@ class App extends React.Component {
         if (keyIndex >= 0)
             newKeyNamePairs.splice(keyIndex, 1);
 
+            this.tps.clearAllTransactions();
+
         // AND FROM OUR APP STATE
         this.setState(prevState => ({
             listKeyPairMarkedForDeletion : null,
@@ -463,6 +465,7 @@ class App extends React.Component {
         let canUndo = this.tps.hasTransactionToUndo();
         let canRedo = this.tps.hasTransactionToRedo();
         let canClose = this.state.currentList !== null;
+        let canAddList = this.state.currentList === null;
         console.log("CURRENT STATE DEBUGGING:")
         console.log(this.state.currentList)
         return (
@@ -470,6 +473,7 @@ class App extends React.Component {
                 <Banner />
                 <SidebarHeading
                     createNewListCallback={this.createNewList}
+                    canAddList={canAddList}
                 />
                 <SidebarList
                     currentList={this.state.currentList}
