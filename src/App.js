@@ -197,6 +197,7 @@ class App extends React.Component {
     }
     // THIS FUNCTION BEGINS THE PROCESS OF CLOSING THE CURRENT LIST
     closeCurrentList = () => {
+        this.tps.clearAllTransactions();
         this.setState(prevState => ({
             listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
             currentList: null,
@@ -254,7 +255,6 @@ class App extends React.Component {
     }
 // this function begins the process of adding a song
     addSong = () => {
-        console.log("add song function reached");
         let theCurrentList = this.state.currentList;
         let newSong = {
             title: "Untitled",
@@ -278,39 +278,54 @@ class App extends React.Component {
     
         this.setStateWithUpdatedList(this.state.currentList);
         this.hideEditModal();
-        console.log("EDIT SONG DEBUGGINGGGG:::")
-        console.log(this.state.currentList  )
     }
 
     insertSongAtId = (index, song) => {
-        console.log("delete song at this index function reached");
         let tempList = this.state.currentList;
         tempList.songs.splice(index, 0, song);
         this.setStateWithUpdatedList(tempList);
     }
 
-    removeSongAtId= (id) =>{
-        console.log("remove song at a certain index function reached");
-        let theCurrentList = this.state.currentList;
-        theCurrentList.songs.splice(id, 1);
-        this.setStateWithUpdatedList(theCurrentList);
-    }
-    /*
-    from hw 1
-        if(this.hasCurrentList()){
-            let currntList = this.currentList.songs;
-            currntList.splice(id,1);
-            this.currentList.songs = currntList;
-            this.view.refreshPlaylist(this.currentList);
+    enableButtons=()=>{
+        console.log("REACHED ENABLE BUTTON FUNCTION YEA");
+        if(this.state.currentList!== null){
+            let addSongButton = document.getElementById("add-song-button");
+            addSongButton.className="playlister-button";
         }
-        for(let i = 0; i<this.currentList.songs.length; i++){
-            console.log(this.currentList.getSongAt(i).title);
-        }       
-         this.saveLists();
-    */
+        if(this.tps.hasTransactionToUndo()){
+            let undoButton = document.getElementById("undo-button");
+            undoButton.className="playlister-button";
+        }
+        if(this.tps.hasTransactionToRedo()){
+            let redoButton = document.getElementById("redo-button");
+            redoButton.className="playlister-button";
+        }
+        if(this.state.currentList!==null){
+            let closeSongButton = document.getElementById("close-button");
+            closeSongButton.className="playlister-button";
+        }
+        if(this.state.currentList === null){
+            let addListButton = document.getElementById("add-list-button");
+            addListButton.className="playlister-button";
+        }
+
+    }
+
+    disableButtons =()=>{
+        let addSongButton = document.getElementById("add-song-button");
+        addSongButton.className = "playlister-button-disabled";
+        let undoButton = document.getElementById("undo-button");
+        undoButton.className="playlister-button-disabled";
+        let redoButton = document.getElementById("redo-button");
+        redoButton.className="playlister-button-disabled";
+        let closeSongButton = document.getElementById("close-button");
+        closeSongButton.className="playlister-button-disabled";
+        let addPlaylistButton = document.getElementById("add-list-button");
+        addPlaylistButton.className="playlister-button-disabled";
+    }
+
 
     deleteSongAtId = (id) => {
-        console.log("delete song function reached");
         this.state.currentList.songs.splice(id, 1);
         this.hideDeleteModal();
         this.db.mutationUpdateList(this.state.currentList);
@@ -318,14 +333,12 @@ class App extends React.Component {
     }
 
     addDeleteSongTransaction = () => {
-        console.log("delete song transaction reached");
         let transaction = new DeleteSongTransaction(this, this.state.songCardId);
         this.tps.addTransaction(transaction);
 
     }
 
     addEditSongTransaction = () =>{
-        console.log("edit song transaction reached");
         let transaction = new EditSongTransaction(this, this.state.songCardId);
         this.tps.addTransaction(transaction);
     }
@@ -333,7 +346,6 @@ class App extends React.Component {
     // this is the transaction for adding songs
 
     addAddSongTransaction = () =>{
-        console.log("add song transaction reached");
         let transaction = new AddSongTransaction(this);
         this.tps.addTransaction(transaction);
     }
@@ -378,7 +390,6 @@ class App extends React.Component {
     }
 
     markSongForDeletion = (id) =>{
-        console.log("mark song for deletion function reached");
         this.setState(prevState => ({
             currentList: prevState.currentList,
             listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
@@ -391,6 +402,7 @@ class App extends React.Component {
 
     showEditModal(id){
         console.log("show edit modal")
+        this.disableButtons();
         let editModal = document.getElementById("edit-song-modal");
         editModal.classList.add("is-visible");
         document.getElementById("title-input").value = this.state.currentList.songs[id].title;
@@ -399,10 +411,17 @@ class App extends React.Component {
      
     }
 
-    hideEditModal(){
+    hideEditModal=()=>{
         let editModal = document.getElementById("edit-song-modal");
         editModal.classList.remove("is-visible")
+        this.enableButtons();
     }
+    // cancelEditSong=()=>{
+    //     let modal = document.getElementById("edit-song-modal");
+    //     modal.classList.remove("is-visible");
+    //     this.enableButtons();
+
+    // }
 
     // this function removes a song
     // need this for delete and also transactions
@@ -415,27 +434,30 @@ class App extends React.Component {
     }
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
     // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
-    showDeleteListModal() {
+    showDeleteListModal=()=>{
+        this.disableButtons();
         let modal = document.getElementById("delete-list-modal");
         modal.classList.add("is-visible");
     }
     // THIS FUNCTION IS FOR HIDING THE MODAL
-    hideDeleteListModal() {
+    hideDeleteListModal=()=>{
         let modal = document.getElementById("delete-list-modal");
         modal.classList.remove("is-visible");
+        this.enableButtons();
     }
     
     //delete show and hide
 
     showDeleteModal(){
-        console.log("show delete modal reached");
+        this.disableButtons();
         let deleteModal = document.getElementById("delete-song-modal");
         deleteModal.classList.add("is-visible");
 
     }
-    hideDeleteModal(){
+    hideDeleteModal=()=>{
         console.log("hide delete modal reached");
         let deleteModal = document.getElementById("delete-song-modal");
+        this.enableButtons();
         deleteModal.classList.remove("is-visible");
 
     }
@@ -466,8 +488,6 @@ class App extends React.Component {
         let canRedo = this.tps.hasTransactionToRedo();
         let canClose = this.state.currentList !== null;
         let canAddList = this.state.currentList === null;
-        console.log("CURRENT STATE DEBUGGING:")
-        console.log(this.state.currentList)
         return (
             <div id="root">
                 <Banner />
